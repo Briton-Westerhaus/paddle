@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Paddle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        #theGame{
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            background-color: lightgray;
+        }
+    </style>
+    <script src="main.js"></script>
+    <script type="text/javascript">
+        var theGame;
+        var context;
+        var width;
+        var height;
+        var elev;
+        var speed;
+        var charPos;
+
+        window.onload = function() {
+            elev = 0;
+            speed = 10;
+            theGame = document.getElementById("theGame");
+            width = window.innerWidth * .9;
+            height = window.innerHeight * .9;
+            theGame.width = width;
+            theGame.height = height;
+            charPos = {
+                x: width / 2,
+                y: height / 2
+            };
+            context = theGame.getContext("2d");
+
+            var interval = window.setInterval(tick, 50);
+
+            document.addEventListener("keydown", function(evt) {
+                if (evt.keyCode == 32)
+                    window.clearInterval(interval);
+            });
+
+            document.addEventListener("mousemove", function(evt) {
+                clearPaddle();
+                charPos = getMousePos(theGame, evt);
+                drawPaddle();
+            });
+        }
+
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+        function clearBall(x, y, elev) {
+            context.clearRect(x - (10 + elev * .7), y - (10 + elev * .7), 20 + elev * 1.4, 20 + elev * 1.4);
+        }
+
+        function drawBall(x, y, elev) {
+            context.fillStyle = "white";
+            context.beginPath();
+            context.arc(x, y, 10 + elev * .7, 0, 2 * Math.PI);
+            context.fill();
+        }
+        
+        function clearPaddle() {
+            context.fillStyle = "lightgray";
+            context.fillRect(charPos.x - 75, charPos.y - 75, 150, 150);
+        }
+
+        function drawPaddle() {
+            context.fillStyle = "blue";
+            context.fillRect(charPos.x - 75, charPos.y - 75, 150, 150);
+        }
+
+        function tick() {
+            clearBall(width / 2, height / 2, elev);
+            drawPaddle();
+            elev += speed;
+            if (elev == 0 && speed < 0)
+                speed = 0 - speed;
+            else
+                speed -= 1;
+            drawBall(width / 2, height / 2, elev);
+        }
+    </script>
+</head>
+<body>
+    <canvas id="theGame" width=500 height=500>
+
+    </canvas>
+</body>
+</html>
