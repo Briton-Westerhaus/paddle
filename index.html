@@ -57,7 +57,9 @@
 
             context = theGame.getContext("2d");
 
-            interval = window.setInterval(tick, 50);
+            interval = null;
+            
+            window.setInterval(tick, 50);
 
             document.addEventListener("keydown", function(evt) {
                 if (evt.keyCode == 32)
