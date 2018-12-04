@@ -28,22 +28,35 @@
         var elev;
         var speed;
         var charPos;
+        var ballPos;
+        var interval;
 
         window.onload = function() {
             elev = 0;
-            speed = 10;
+            speed = {
+                x: 0,
+                y: 0,
+                z: 10
+            };
             theGame = document.getElementById("theGame");
             width = window.innerWidth * .9;
             height = window.innerHeight * .9;
             theGame.width = width;
             theGame.height = height;
+
             charPos = {
                 x: width / 2,
                 y: height / 2
             };
+
+            ballPos = {
+                x: width / 2,
+                y: height / 2
+            };
+
             context = theGame.getContext("2d");
 
-            var interval = window.setInterval(tick, 50);
+            interval = window.setInterval(tick, 50);
 
             document.addEventListener("keydown", function(evt) {
                 if (evt.keyCode == 32)
@@ -54,6 +67,7 @@
                 clearPaddle();
                 charPos = getMousePos(theGame, evt);
                 drawPaddle();
+                drawBall(ballPos.x, ballPos.y, elev);
             });
         }
 
@@ -86,15 +100,27 @@
             context.fillRect(charPos.x - 75, charPos.y - 75, 150, 150);
         }
 
+        function lose() {
+            window.clearInterval(interval);
+            alert("You lost!");
+        }
+
         function tick() {
-            clearBall(width / 2, height / 2, elev);
+            clearBall(ballPos.x, ballPos.y, elev);
             drawPaddle();
-            elev += speed;
-            if (elev == 0 && speed < 0)
-                speed = 0 - speed;
-            else
-                speed -= 1;
-            drawBall(width / 2, height / 2, elev);
+            elev += speed.z;
+            ballPos.x += speed.x;
+            ballPos.y += speed.y;
+            if (elev == 0 && speed.z < 0) {
+                if (Math.abs(charPos.x - ballPos.x) <= 75 && Math.abs(charPos.y - ballPos.y) <= 75) { //Bounce!
+                    speed.z = 0 - speed.z;
+                    speed.x += Math.round((ballPos.x - charPos.x) / 2);
+                    speed.x += Math.round((ballPos.y - charPos.y) / 2);
+                } else //Lost Game!
+                    lose();
+            } else
+                speed.z -= 1;
+            drawBall(ballPos.x, ballPos.y, elev);
         }
     </script>
 </head>
