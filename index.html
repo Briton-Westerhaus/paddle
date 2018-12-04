@@ -30,6 +30,7 @@
         var charPos;
         var ballPos;
         var interval;
+        var rect;
 
         window.onload = function() {
             elev = 0;
@@ -72,7 +73,7 @@
         }
 
         function getMousePos(canvas, evt) {
-            var rect = canvas.getBoundingClientRect();
+            rect = canvas.getBoundingClientRect();
             return {
                 x: evt.clientX - rect.left,
                 y: evt.clientY - rect.top
@@ -121,6 +122,8 @@
             } else
                 speed.z -= 1;
             drawBall(ballPos.x, ballPos.y, elev);
+            if (ballPos.x < 0 || ballPos.y < 0 || ballPos.x > rect.width || ballPos.y > rect.height)
+                lose();
         }
     </script>
 </head>
