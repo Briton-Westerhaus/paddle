@@ -31,8 +31,12 @@
         var ballPos;
         var interval;
         var rect;
+        var bounces;
+        var bounceCount;
 
         window.onload = function() {
+            bounceCount = document.getElementById("BounceCount");
+            bounceCount.innerHTML = bounces = 0;
             elev = 0;
             speed = {
                 x: 0,
@@ -58,12 +62,15 @@
             context = theGame.getContext("2d");
 
             interval = null;
-            
-            window.setInterval(tick, 50);
 
             document.addEventListener("keydown", function(evt) {
                 if (evt.keyCode == 32)
                     window.clearInterval(interval);
+            });
+
+            document.addEventListener("click", function(evt) {
+                if (interval == null)
+                    interval =  window.setInterval(tick, 50);
             });
 
             document.addEventListener("mousemove", function(evt) {
@@ -105,6 +112,7 @@
 
         function lose() {
             window.clearInterval(interval);
+            interval = null;
             alert("You lost!");
         }
 
@@ -114,18 +122,34 @@
             elev += speed.z;
             ballPos.x += speed.x;
             ballPos.y += speed.y;
-            if (elev == 0 && speed.z < 0) {
+            if (elev <= 0 && speed.z < 0) {
                 if (Math.abs(charPos.x - ballPos.x) <= 75 && Math.abs(charPos.y - ballPos.y) <= 75) { //Bounce!
                     speed.z = 0 - speed.z;
                     speed.x += Math.round((ballPos.x - charPos.x) / 2);
-                    speed.x += Math.round((ballPos.y - charPos.y) / 2);
+                    speed.y += Math.round((ballPos.y - charPos.y) / 2);
+                    bounces++;
+                    bounceCount.innerHTML = bounces;
                 } else //Lost Game!
                     lose();
             } else
                 speed.z -= 1;
+            if (ballPos.x <= 0) {
+                ballPos.x = Math.abs(ballPos.x);
+                speed.x = 0 - speed.x;
+            } else if (ballPos.x >= rect.width) {
+                ballPos.x = 2 * rect.width - ballPos.x;
+                speed.x = 0 - speed.x;
+            }
+
+            if (ballPos.y <= 0) {
+                ballPos.y = Math.abs(ballPos.y);
+                speed.y = 0 - speed.y;
+            } else if (ballPos.y >= rect.height) {
+                ballPos.y = 2 * rect.height - ballPos.y;
+                speed.y = 0 - speed.y;
+            }
             drawBall(ballPos.x, ballPos.y, elev);
-            if (ballPos.x < 0 || ballPos.y < 0 || ballPos.x > rect.width || ballPos.y > rect.height)
-                lose();
+
         }
     </script>
 </head>
@@ -133,5 +157,6 @@
     <canvas id="theGame" width=500 height=500>
 
     </canvas>
+    <p>Bounces: <span id="BounceCount"></span></p>
 </body>
 </html>
