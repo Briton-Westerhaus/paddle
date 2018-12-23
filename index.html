@@ -16,7 +16,15 @@
             margin-left: auto;
             margin-right: auto;
             display: block;
-            background-color: lightgray;
+            background-color: white;
+            border: 1px solid black;
+        }
+        p.header{
+            font-size: 1.5em;
+            font-weight: bold;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
     <script src="main.js"></script>
@@ -45,7 +53,7 @@
             };
             theGame = document.getElementById("theGame");
             width = window.innerWidth * .9;
-            height = window.innerHeight * .9;
+            height = window.innerHeight * .8;
             theGame.width = width;
             theGame.height = height;
 
@@ -94,14 +102,18 @@
         }
 
         function drawBall(x, y, elev) {
-            context.fillStyle = "white";
+            var radius = 10 + elev * .7;
+            var grd = context.createRadialGradient(x - radius / 4, y - radius / 4, radius / 10, x - radius / 4, y - radius / 4, radius);
+            grd.addColorStop(0, "white");
+            grd.addColorStop(1, "lightgray");
+            context.fillStyle = grd;
             context.beginPath();
-            context.arc(x, y, 10 + elev * .7, 0, 2 * Math.PI);
+            context.arc(x, y, radius, 0, 2 * Math.PI);
             context.fill();
         }
         
         function clearPaddle() {
-            context.fillStyle = "lightgray";
+            context.fillStyle = "white";
             context.fillRect(charPos.x - 75, charPos.y - 75, 150, 150);
         }
 
@@ -154,9 +166,7 @@
     </script>
 </head>
 <body>
-    <canvas id="theGame" width=500 height=500>
-
-    </canvas>
-    <p>Bounces: <span id="BounceCount"></span></p>
+    <p class="header">Bounces: <span id="BounceCount"></span></p>
+    <canvas id="theGame" width=500 height=500></canvas>
 </body>
 </html>
