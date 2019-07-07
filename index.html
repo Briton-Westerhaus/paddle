@@ -18,6 +18,7 @@
             display: block;
             background-color: white;
             border: 1px solid black;
+            cursor: none;
         }
         p.header{
             font-size: 1.5em;
@@ -25,6 +26,7 @@
             width: 90%;
             margin-left: auto;
             margin-right: auto;
+            font-family: Arial, Helvetica, sans-serif;
         }
     </style>
     <script src="main.js"></script>
@@ -44,28 +46,12 @@
 
         window.onload = function() {
             bounceCount = document.getElementById("BounceCount");
-            bounceCount.innerHTML = bounces = 0;
-            elev = 0;
-            speed = {
-                x: 0,
-                y: 0,
-                z: 10
-            };
+            
             theGame = document.getElementById("theGame");
             width = window.innerWidth * .9;
             height = window.innerHeight * .8;
             theGame.width = width;
             theGame.height = height;
-
-            charPos = {
-                x: width / 2,
-                y: height / 2
-            };
-
-            ballPos = {
-                x: width / 2,
-                y: height / 2
-            };
 
             context = theGame.getContext("2d");
 
@@ -77,8 +63,10 @@
             });
 
             document.addEventListener("click", function(evt) {
-                if (interval == null)
+                if (interval == null) {
+                    newGame();
                     interval =  window.setInterval(tick, 50);
+                }
             });
 
             document.addEventListener("mousemove", function(evt) {
@@ -87,6 +75,32 @@
                 drawPaddle();
                 drawBall(ballPos.x, ballPos.y, elev);
             });
+
+            newGame();
+        }
+
+        function newGame(){
+            if (charPos)
+               clearPaddle();
+            if (ballPos)
+                clearBall(ballPos.x, ballPos.y, elev);
+            bounceCount.innerHTML = bounces = 0;
+            elev = 0;
+            speed = {
+                x: 0,
+                y: 0,
+                z: 10
+            };
+
+            charPos = {
+                x: width / 2,
+                y: height / 2
+            };
+
+            ballPos = {
+                x: width / 2,
+                y: height / 2
+            };
         }
 
         function getMousePos(canvas, evt) {
@@ -104,22 +118,39 @@
         function drawBall(x, y, elev) {
             var radius = 10 + elev * .7;
             var grd = context.createRadialGradient(x - radius / 4, y - radius / 4, radius / 10, x - radius / 4, y - radius / 4, radius);
+            context.strokeStyle = "rgba(0, 0, 0, 0)";
             grd.addColorStop(0, "white");
             grd.addColorStop(1, "lightgray");
             context.fillStyle = grd;
             context.beginPath();
             context.arc(x, y, radius, 0, 2 * Math.PI);
+            context.closePath();
             context.fill();
         }
         
         function clearPaddle() {
+            context.strokeStyle = "rgba(0, 0, 0, 0)";
             context.fillStyle = "white";
-            context.fillRect(charPos.x - 75, charPos.y - 75, 150, 150);
+            context.fillRect(charPos.x - 76, charPos.y - 76, 152, 152);
         }
 
         function drawPaddle() {
-            context.fillStyle = "blue";
+            context.strokeStyle = "black";
+            context.strokeRect(charPos.x - 75, charPos.y - 75, 150, 150);
+            context.fillStyle = "rgb(200, 215, 255)";
             context.fillRect(charPos.x - 75, charPos.y - 75, 150, 150);
+            context.beginPath();
+            context.moveTo(charPos.x - 75, charPos.y);
+            context.lineTo(charPos.x + 75, charPos.y);
+            context.moveTo(charPos.x, charPos.y - 75);
+            context.lineTo(charPos.x, charPos.y + 75);
+            context.closePath();
+            context.stroke();
+            context.beginPath();
+            context.arc(charPos.x, charPos.y, 10, 0, 2 * Math.PI);
+            context.closePath();
+            context.stroke();
+            context.fill();
         }
 
         function lose() {
@@ -137,8 +168,14 @@
             if (elev <= 0 && speed.z < 0) {
                 if (Math.abs(charPos.x - ballPos.x) <= 75 && Math.abs(charPos.y - ballPos.y) <= 75) { //Bounce!
                     speed.z = 0 - speed.z;
-                    speed.x += Math.round((ballPos.x - charPos.x) / 2);
-                    speed.y += Math.round((ballPos.y - charPos.y) / 2);
+                    if (ballPos.x == charPos.x)
+                        speed.x += Math.random() > .5 ? 1 : -1;
+                    else
+                        speed.x += Math.round((ballPos.x - charPos.x) / 2);
+                    if (ballPos.y == charPos.y)
+                        speed.y += Math.random() > .5 ? 1 : -1;
+                    else
+                        speed.y += Math.round((ballPos.y - charPos.y) / 2);
                     bounces++;
                     bounceCount.innerHTML = bounces;
                 } else //Lost Game!
