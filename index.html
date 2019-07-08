@@ -58,8 +58,13 @@
             interval = null;
 
             document.addEventListener("keydown", function(evt) {
-                if (evt.keyCode == 32)
-                    window.clearInterval(interval);
+                if (evt.keyCode == 32) {  // Space bar
+                    if (interval) {
+                        window.clearInterval(interval);
+                        interval = false; // Paused
+                    } else 
+                    interval = window.setInterval(tick, 50);
+                }
             });
 
             document.addEventListener("click", function(evt) {
@@ -171,11 +176,11 @@
                     if (ballPos.x == charPos.x)
                         speed.x += Math.random() > .5 ? 1 : -1;
                     else
-                        speed.x += Math.round((ballPos.x - charPos.x) / 2);
+                        speed.x += Math.round((ballPos.x - charPos.x) / 3);
                     if (ballPos.y == charPos.y)
                         speed.y += Math.random() > .5 ? 1 : -1;
                     else
-                        speed.y += Math.round((ballPos.y - charPos.y) / 2);
+                        speed.y += Math.round((ballPos.y - charPos.y) / 3);
                     bounces++;
                     bounceCount.innerHTML = bounces;
                 } else //Lost Game!
