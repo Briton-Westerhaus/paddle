@@ -43,9 +43,11 @@
         var rect;
         var bounces;
         var bounceCount;
+        var bounceSound;
 
         window.onload = function() {
             bounceCount = document.getElementById("BounceCount");
+            bounceSound = document.getElementById("BounceSound");
             
             theGame = document.getElementById("theGame");
             width = window.innerWidth * .9;
@@ -183,6 +185,7 @@
                         speed.y += Math.round((ballPos.y - charPos.y) / 3);
                     bounces++;
                     bounceCount.innerHTML = bounces;
+                    bounceSound.play();
                 } else //Lost Game!
                     lose();
             } else
@@ -208,6 +211,7 @@
     </script>
 </head>
 <body>
+    <audio preload src="bounce.mp3" id="BounceSound"></audio>
     <p class="header">Bounces: <span id="BounceCount"></span></p>
     <canvas id="theGame" width=500 height=500></canvas>
 </body>
