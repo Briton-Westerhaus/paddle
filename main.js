@@ -142,6 +142,9 @@ window.onload = function() {
 
 function newGame(){
     // Sets positions and sets the score to 0
+
+    bounceSound.muted = false;
+
     if (myPaddle && myPaddle.position)
         myPaddle.clear();
     if (myBall && myBall.position)
