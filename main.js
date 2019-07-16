@@ -12,9 +12,9 @@ var myBall;
 
 class paddle { //Player controlled
 
-    constructor() {
-        this.height = 150;
-        this.width = 150;
+    constructor(theHeight = 150, theWidth = 150) {
+        this.height = theHeight;
+        this.width = theWidth;
         
         // These are for convenience as they are used often.
         this.halfHeight = this.height / 2;
@@ -32,9 +32,9 @@ class paddle { //Player controlled
     draw() {
         // Draws the paddle at the current user position
         context.strokeStyle = "black";
-        context.strokeRect(this.position.x - this.halfWidth, this.position.y - this.halfHeight, 150, 150);
+        context.strokeRect(this.position.x - this.halfWidth, this.position.y - this.halfHeight, this.width, this.height);
         context.fillStyle = "rgb(200, 215, 255)";
-        context.fillRect(this.position.x - this.halfWidth, this.position.y - this.halfHeight, 150, 150);
+        context.fillRect(this.position.x - this.halfWidth, this.position.y - this.halfHeight, this.width, this.height);
         context.beginPath();
         context.moveTo(this.position.x - this.halfWidth, this.position.y);
         context.lineTo(this.position.x + this.halfWidth, this.position.y);
@@ -53,13 +53,13 @@ class paddle { //Player controlled
         //Clears the paddl so it can be drawn next
         context.strokeStyle = "rgba(0, 0, 0, 0)";
         context.fillStyle = "white";
-        context.fillRect(this.position.x - this.width / 2 - 1, this.position.y - this.height / 2 - 1, this.width + 2, this.height + 2);
+        context.fillRect(this.position.x - this.width / 2 - 1, this.position.y - this.height / 2 - 1, this.width + 3, this.height + 3);
     }
 }
 
 class ball {
 
-    constructor() {
+    constructor(baseRadius = 10, radiusMultiplier = .7) {
         this.position = {
             x: width / 2,
             y: height / 2,
@@ -72,8 +72,8 @@ class ball {
             z: 10
         }
 
-        this.baseRadius = 10;
-        this.radiusMultiplier = .7;
+        this.baseRadius = baseRadius;
+        this.radiusMultiplier = radiusMultiplier;
     }
 
     radius() {
