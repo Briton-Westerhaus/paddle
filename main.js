@@ -9,6 +9,37 @@ var bounceCount;
 var bounceSound;
 var myPaddle;
 var myBall;
+var myModal;
+
+class modal {
+    constructor(text) {
+        this.text = text;
+        
+        this.container = document.createElement("div");
+        this.container.style = "height: 100%; width: 100%; background-color: rgba(200, 200, 200, .5); position: absolute; top: 0px;";
+        document.getElementsByTagName('body')[0].appendChild(this.container);
+
+        this.dialog = document.createElement("div");
+        this.dialog.style = "position: absolute; height: 20%; width: 20%; left: 40%; top: 40%; background-color: white; border: 1px solid black; border-radius: 3px;";
+        this.container.appendChild(this.dialog);
+
+        this.textNode = document.createElement("p");
+        this.textNode.innerHTML = text;
+        this.textNode.style = "margin-top: 25%; text-align: center;"; // Why does 25% work here?
+        this.dialog.appendChild(this.textNode);
+
+    }
+
+    show(text = undefined) {
+        if (text)
+            this.text = text;
+        this.container.display = "block";
+    }
+
+    hide() {
+        this.container.display = "none";
+    }
+}
 
 class paddle { //Player controlled
 
@@ -136,6 +167,8 @@ window.onload = function() {
         myPaddle.draw();
         myBall.draw();;
     });
+
+    myModal = new modal("New Game?");
 
     newGame();
 }
