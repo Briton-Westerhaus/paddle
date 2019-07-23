@@ -6,38 +6,68 @@ var interval;
 var rect;
 var bounces;
 var bounceCount;
+var highScore;
+var highScoreCount;
 var bounceSound;
 var myPaddle;
 var myBall;
 var myModal;
 
 class modal {
-    constructor(text) {
-        this.text = text;
+    constructor(dialogText, button1Text, button2Text) {
+        this.dialogText = dialogText;
+        this.button1Text = button1Text;
+        this.button2Text = button2Text;
         
         this.container = document.createElement("div");
-        this.container.style = "height: 100%; width: 100%; background-color: rgba(200, 200, 200, .5); position: absolute; top: 0px;";
+        this.container.className = "js-modal-dialog";
         document.getElementsByTagName('body')[0].appendChild(this.container);
 
         this.dialog = document.createElement("div");
-        this.dialog.style = "position: absolute; height: 20%; width: 20%; left: 40%; top: 40%; background-color: white; border: 1px solid black; border-radius: 3px;";
         this.container.appendChild(this.dialog);
 
         this.textNode = document.createElement("p");
-        this.textNode.innerHTML = text;
-        this.textNode.style = "margin-top: 25%; text-align: center;"; // Why does 25% work here?
+        this.textNode.innerHTML = dialogText;
         this.dialog.appendChild(this.textNode);
 
+        this.button1 = document.createElement("button");
+        this.button1.innerHTML = button1Text;
+        this.button1.onclick = function(){
+            myModal.hide(); //Is there a way to self-reference here?
+            newGame();
+        };
+        this.dialog.appendChild(this.button1);
+
+        this.button2 = document.createElement("button");
+        this.button2.innerHTML = button2Text;
+        this.button2.style.cssFloat = "right";
+        this.button2.onclick = function(){
+            myModal.hide();
+        };
+        this.dialog.appendChild(this.button2);
     }
 
-    show(text = undefined) {
-        if (text)
-            this.text = text;
-        this.container.display = "block";
+    show(dialogText = undefined, button1Text = undefined, button2Text = undefined) {
+        if (dialogText) {
+            this.dialogText = dialogText;
+            this.textNode.innerHTML = dialogText;
+        }
+
+        if (button1Text) {
+            this.button1Text = button1Text;
+            this.button1.innerHTML = button1Text;
+        }
+
+        if (button2Text) {
+            this.button2Text = button2Text;
+            this.button2.innerHTML = button2Text;
+        }
+
+        this.container.style.display = "block";
     }
 
     hide() {
-        this.container.display = "none";
+        this.container.style.display = "none";
     }
 }
 
@@ -132,6 +162,7 @@ class ball {
 
 window.onload = function() {
     bounceCount = document.getElementById("BounceCount");
+    highScoreCount = document.getElementById("HighScoreCount");
     bounceSound = document.getElementById("BounceSound");
     
     theGame = document.getElementById("theGame");
@@ -154,13 +185,6 @@ window.onload = function() {
         }
     });
 
-    document.addEventListener("click", function(evt) {
-        if (interval == null) {
-            newGame();
-            interval =  window.setInterval(tick, 50);
-        }
-    });
-
     document.addEventListener("mousemove", function(evt) {
         myPaddle.clear();
         myPaddle.position = getMousePos(theGame, evt);
@@ -168,9 +192,7 @@ window.onload = function() {
         myBall.draw();;
     });
 
-    myModal = new modal("New Game?");
-
-    newGame();
+    myModal = new modal("New Game?", "Yes", "No");
 }
 
 function newGame(){
@@ -183,9 +205,13 @@ function newGame(){
     if (myBall && myBall.position)
         myBall.clear();
     bounceCount.innerHTML = bounces = 0;
+    if (!highScore)
+        highScoreCount.innerHTML = highScore = 0;
 
     myPaddle = new paddle();
     myBall = new ball();
+
+    interval =  window.setInterval(tick, 50);
 }
 
 function getMousePos(canvas, evt) {
@@ -199,7 +225,7 @@ function getMousePos(canvas, evt) {
 function lose() {
     window.clearInterval(interval);
     interval = null;
-    alert("You lost!");
+    myModal.show("You lose!<br />Your score: " + bounces + "<br />Play again?");
 }
 
 function tick() {
@@ -221,6 +247,10 @@ function tick() {
                 myBall.speed.y += Math.round((myBall.position.y - myPaddle.position.y) / 3);
             bounces++;
             bounceCount.innerHTML = bounces;
+            if (bounces > highScore) {
+                highScore = bounces;
+                highScoreCount.innerHTML = highScore;
+            }
             bounceSound.play();
         } else //Lost Game!
             lose();
