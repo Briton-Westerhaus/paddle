@@ -9,6 +9,7 @@ body {
     padding: 0px;
     margin: 0px;
 }
+
 #theGame{
     margin-left: auto;
     margin-right: auto;
@@ -17,6 +18,7 @@ body {
     border: 1px solid black;
     cursor: none;
 }
+
 p.header{
     font-size: 1.5em;
     font-weight: bold;

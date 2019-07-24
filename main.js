@@ -14,10 +14,10 @@ var myBall;
 var myModal;
 
 class modal {
-    constructor(dialogText, button1Text, button2Text) {
+    constructor(dialogText, buttons = []) {
         this.dialogText = dialogText;
-        this.button1Text = button1Text;
-        this.button2Text = button2Text;
+        this.buttonTexts = [];
+        this.buttons = [];
         
         this.container = document.createElement("div");
         this.container.className = "js-modal-dialog";
@@ -30,21 +30,17 @@ class modal {
         this.textNode.innerHTML = dialogText;
         this.dialog.appendChild(this.textNode);
 
-        this.button1 = document.createElement("button");
-        this.button1.innerHTML = button1Text;
-        this.button1.onclick = function(){
-            myModal.hide(); //Is there a way to self-reference here?
-            newGame();
-        };
-        this.dialog.appendChild(this.button1);
-
-        this.button2 = document.createElement("button");
-        this.button2.innerHTML = button2Text;
-        this.button2.style.cssFloat = "right";
-        this.button2.onclick = function(){
-            myModal.hide();
-        };
-        this.dialog.appendChild(this.button2);
+        buttons.forEach(function(item, index) {
+            this.buttons.push(document.createElement("button"));
+            this.buttonTexts.push(item.text);
+            this.buttons[index].innerHTML = this.buttonTexts[index];
+            this.buttons[index].onclick= function() {
+                myModal.hide(); //Is there a way to self-reference here?
+                if (!!item.function)
+                    item.function(); // This doesn't allow for parameters. Is that okay?
+            };
+            this.dialog.appendChild(this.buttons[index]);
+        }, this);
     }
 
     show(dialogText = undefined, button1Text = undefined, button2Text = undefined) {
@@ -192,7 +188,17 @@ window.onload = function() {
         myBall.draw();;
     });
 
-    myModal = new modal("New Game?", "Yes", "No");
+    myModal = new modal(
+        "New Game?",
+        [{
+            text: "Yes",
+            function: newGame   
+        },
+        {
+            text: "No",
+            function: null
+        }]
+    );
 }
 
 function newGame(){
