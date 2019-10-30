@@ -56,16 +56,17 @@ p.header{
     border-radius: 2px;
     text-transform: uppercase;
     font-weight: bold;
+    text-align: center;
     margin-top: 5%;
     margin-bottom: 5%;
-    margin-left: 10%;
-    margin-right: 10%;
-    padding-left: 5%;
-    padding-right: 5%;
+    margin-left: 15%;
+    margin-right: 15%;
+    width: 20%;
     padding-top: 1%;
     padding-bottom: 1%;
 }
 
 .js-modal-dialog div button:hover{
     background-color: rgb(160, 160, 160);
+    cursor: pointer;
 }

@@ -34,6 +34,8 @@ class modal {
             this.buttons.push(document.createElement("button"));
             this.buttonTexts.push(item.text);
             this.buttons[index].innerHTML = this.buttonTexts[index];
+            this.buttons[index].style.marginLeft = (100 - (20 * buttons.length)) / (2 * buttons.length) + "%";
+            this.buttons[index].style.marginRight = (100 - (20 * buttons.length)) / (2 * buttons.length) + "%";
             this.buttons[index].onclick= function() {
                 myModal.hide(); //Is there a way to self-reference here?
                 if (!!item.function)
@@ -43,7 +45,7 @@ class modal {
         }, this);
     }
 
-    show(dialogText = undefined, button1Text = undefined, button2Text = undefined) {
+    show(dialogText = undefined, button1Text = undefined, button2Text = undefined, button3Text = undefined) {
         if (dialogText) {
             this.dialogText = dialogText;
             this.textNode.innerHTML = dialogText;
